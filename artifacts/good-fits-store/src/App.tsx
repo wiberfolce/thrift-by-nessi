@@ -36,7 +36,7 @@ function money(value: number) {
 function whatsappUrl(product?: Product, number = waNumbers[0]) {
   const message = product
     ? `Hi, I'm interested in the ${product.name}. Is it still available?`
-    : 'Hi, I would like to see the latest available pieces from Good Fits Better Finds.';
+    : 'Hi, I would like to see the latest available pieces from thrift by Nessi.';
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
@@ -53,12 +53,12 @@ function Logo({ compact = false }: { compact?: boolean }) {
       data-testid={compact ? 'footer-logo' : 'button-logo'}
     >
       <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden bg-[hsl(var(--secondary))] text-[hsl(var(--foreground))] transition-transform duration-300 group-hover:rotate-6">
-        <span className="font-display text-lg font-bold leading-none">G</span>
+        <span className="font-display text-lg font-bold leading-none">N</span>
       </span>
       <span className="font-display text-[13px] font-bold uppercase leading-[.95] tracking-[-.03em]">
-        Good Fits
+        thrift by
         <br />
-        <span className="text-[hsl(var(--accent))]">Better Finds</span>
+        <span className="text-[hsl(var(--accent))]">Nessi</span>
       </span>
     </button>
   );
@@ -396,7 +396,7 @@ function Footer() {
           <div className="grid grid-cols-2 gap-x-16 gap-y-4 font-mono-custom text-[10px] uppercase tracking-[.11em] text-[hsl(var(--primary-foreground)/.68)]"><button type="button" onClick={() => scrollToId('shop')} className="text-left hover:text-[hsl(var(--secondary))]" data-testid="footer-shop">Shop</button><button type="button" onClick={() => scrollToId('drops')} className="text-left hover:text-[hsl(var(--secondary))]" data-testid="footer-drops">New drops</button><button type="button" onClick={() => scrollToId('delivery')} className="text-left hover:text-[hsl(var(--secondary))]" data-testid="footer-delivery">Delivery</button><a href={whatsappUrl()} target="_blank" rel="noreferrer" className="hover:text-[hsl(var(--secondary))]" data-testid="footer-whatsapp">WhatsApp</a><a href="https://x.com/Esinkumabakofi/status/2104648800073556128/video/1" target="_blank" rel="noreferrer" className="hover:text-[hsl(var(--secondary))]" data-testid="footer-x">X reference</a></div>
           <div className="font-mono-custom text-[10px] uppercase tracking-[.11em] text-[hsl(var(--primary-foreground)/.68)]"><p className="mb-4 text-[hsl(var(--secondary))]">Find us</p><p>Kwashieman, Accra</p><p className="mt-2">Nationwide delivery across Ghana</p><p className="mt-4">+233 24 230 4326</p><p className="mt-2">+233 50 121 8442</p></div>
         </div>
-        <div className="flex flex-col justify-between gap-3 pt-6 font-mono-custom text-[9px] uppercase tracking-[.1em] text-[hsl(var(--primary-foreground)/.42)] sm:flex-row"><span>Good Fits Better Finds</span><span>© {new Date().getFullYear()} / All finds reserved</span></div>
+        <div className="flex flex-col justify-between gap-3 pt-6 font-mono-custom text-[9px] uppercase tracking-[.1em] text-[hsl(var(--primary-foreground)/.42)] sm:flex-row"><span>thrift by Nessi</span><span>© {new Date().getFullYear()} / All finds reserved</span></div>
       </div>
     </footer>
   );

@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/"
-title = "Good Fits Better Finds"
+title = "thrift by Nessi"
 description = "A premium frontend-only thrift fashion storefront for a Ghanaian streetwear business, designed to help customers browse curated pieces and order through WhatsApp."
 version = "1.0.0"
 id = "artifacts/good-fits-store"
