@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Good Fits Better Finds"
+description = "A premium frontend-only thrift fashion storefront for a Ghanaian streetwear business, designed to help customers browse curated pieces and order through WhatsApp."
+version = "1.0.0"
+id = "artifacts/good-fits-store"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24887
+
+[services.development]
+run = "pnpm --filter @workspace/good-fits-store run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/good-fits-store", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/good-fits-store/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24887"
+BASE_PATH = "/"

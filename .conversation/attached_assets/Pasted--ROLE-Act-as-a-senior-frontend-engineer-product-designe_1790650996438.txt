@@ -1,0 +1,581 @@
+# ROLE
+
+Act as a senior frontend engineer, product designer, and e-commerce UX specialist.
+
+Build a **premium frontend-only online fashion store demo** for a Ghanaian thrift clothing business selling cargo pants, joggers, jeans, khakis and other casual streetwear.
+
+This is a **sales demo**, not a production backend application.
+
+Do NOT build authentication, database, admin dashboard, backend APIs, payment processing, or server-side functionality.
+
+The primary conversion action should be **ordering through WhatsApp**.
+
+---
+
+# BUSINESS INFORMATION
+
+Location:
+**Kwashieman, Accra, Ghana**
+
+Delivery:
+**Nationwide delivery across Ghana 🇬🇭**
+
+Products:
+
+* Cargo pants
+* Joggers
+* Jeans
+* Khaki trousers
+* Casual trousers
+* Other thrift/streetwear pieces
+
+WhatsApp:
+
+* +233 24 230 4326
+* +233 50 121 8442
+
+X/Twitter video reference:
+https://x.com/Esinkumabakofi/status/2104648800073556128/video/1
+
+The business currently promotes clothing on X and directs customers to WhatsApp to see available stock.
+
+---
+
+# BRAND POSITIONING
+
+Do NOT make the site feel like a cheap secondhand marketplace.
+
+Position the business as:
+
+**Curated thrift. Everyday style. Better finds.**
+
+The visual direction should communicate:
+
+* Affordable fashion
+* Good-looking pieces
+* Streetwear
+* Casual lifestyle
+* Fresh finds
+* Limited/unique stock
+* Easy ordering
+* Ghanaian local business with nationwide delivery
+
+The website should make someone think:
+
+> "I can actually shop this store instead of scrolling through WhatsApp statuses."
+
+---
+
+# HERO SECTION
+
+Create a visually strong fashion-focused hero.
+
+Main headline:
+
+**Good Fits. Better Finds.**
+
+Supporting copy:
+
+**Cargo pants, joggers, jeans, khakis and standout thrift pieces — carefully selected for your everyday style.**
+
+Primary CTA:
+
+**Shop the Collection**
+
+Secondary CTA:
+
+**Order on WhatsApp**
+
+Small trust/location line:
+
+**Kwashieman, Accra · Nationwide Delivery 🇬🇭**
+
+Use a large fashion image/video treatment if suitable.
+
+The X video provided above can be represented as a prominent visual/video section if technically possible in the frontend. If embedding the X video is unreliable, use a local placeholder/media slot rather than breaking the page.
+
+---
+
+# NAVIGATION
+
+Create a clean modern navigation bar:
+
+Logo / business name
+
+Links:
+
+* Shop
+* New Drops
+* About
+* Delivery
+
+Right side:
+
+**WhatsApp Order**
+
+On mobile, use a clean hamburger menu.
+
+The navigation should remain minimal.
+
+---
+
+# SHOP SECTION
+
+Headline:
+
+**Find Your Next Fit.**
+
+Supporting text:
+
+**Fresh thrift pieces for everyday wear. Stock moves fast, so if you see something you like, grab it.**
+
+Create category filters:
+
+**All**
+**Cargo**
+**Joggers**
+**Jeans**
+**Khaki**
+**New Drops**
+
+Build a beautiful responsive product grid.
+
+Use large product imagery.
+
+Each product card should contain:
+
+* Product image
+* Product name
+* Category
+* Price in GH₵
+* Availability badge where appropriate
+* "Order on WhatsApp" button
+
+Example product names can be used only as temporary demo data:
+
+* Relaxed Cargo Pants
+* Classic Black Joggers
+* Vintage Wash Jeans
+* Straight Fit Khaki
+* Utility Cargo
+* Everyday Joggers
+
+Clearly structure the data so real catalog products/images/prices can easily replace the demo content.
+
+DO NOT invent claims about specific brands or product conditions.
+
+---
+
+# PRODUCT CARD UX
+
+Make the product cards feel premium.
+
+On hover:
+
+* Slight image zoom
+* Subtle card elevation
+* CTA becomes more prominent
+
+Each card should have:
+
+**View Details**
+
+and
+
+**Order on WhatsApp**
+
+For WhatsApp ordering, generate a pre-filled message such as:
+
+"Hi, I'm interested in the [PRODUCT NAME]. Is it still available?"
+
+The WhatsApp links should use:
+
+https://wa.me/233242304326
+
+and
+
+https://wa.me/233501218442
+
+Do not display the raw URLs.
+
+---
+
+# FEATURED SECTION
+
+Create a section called:
+
+**The Pieces Everyone Wants**
+
+Show 3–4 visually large featured products.
+
+Copy:
+
+**From cargos that complete the fit to everyday jeans you can wear anywhere — find pieces that work with your wardrobe.**
+
+Use strong editorial-style imagery.
+
+---
+
+# "NEW DROPS" SECTION
+
+Create a section emphasizing the nature of thrift stock.
+
+Headline:
+
+**Fresh Drops. Limited Pieces.**
+
+Copy:
+
+**Thrift stock changes quickly. New pieces come in, good pieces go out. Check the latest drop before it's gone.**
+
+Use a horizontal product carousel on desktop/mobile where appropriate.
+
+Add small labels such as:
+
+**NEW**
+**JUST IN**
+**LIMITED**
+
+Do not create fake scarcity countdown timers.
+
+---
+
+# WHATSAPP SHOPPING EXPERIENCE
+
+Make WhatsApp the central ordering mechanism.
+
+Create a dedicated section:
+
+**See Something You Like?**
+
+Copy:
+
+**Send us a message with the piece you're interested in. We'll confirm availability, size and delivery details on WhatsApp.**
+
+Buttons:
+
+**Chat on WhatsApp**
+
+and
+
+**Browse More Pieces**
+
+Include both WhatsApp numbers as options if useful.
+
+For every product, the WhatsApp CTA should automatically include the product name.
+
+Example:
+
+"Hi, I'd like to order the Relaxed Cargo Pants. Is it available?"
+
+---
+
+# HOW IT WORKS
+
+Create a simple 3-step section.
+
+### 01 — Find Your Fit
+
+Browse the latest cargos, joggers, jeans and thrift finds.
+
+### 02 — Message Us
+
+Tap the WhatsApp button and send the item you're interested in.
+
+### 03 — Get It Delivered
+
+Confirm your details and receive your order anywhere in Ghana.
+
+Keep this section extremely visual and concise.
+
+---
+
+# DELIVERY SECTION
+
+Headline:
+
+**From Kwashieman to Your Door.**
+
+Copy:
+
+**We're based in Kwashieman, Accra and deliver nationwide across Ghana.**
+
+Show a subtle Ghana map / delivery visual if it fits the design.
+
+Do not claim exact delivery times or prices unless provided.
+
+---
+
+# ABOUT SECTION
+
+Headline:
+
+**Thrift, But Make It Your Style.**
+
+Copy:
+
+**We source pieces for people who want everyday clothes with personality — from relaxed cargos and joggers to jeans, khakis and other standout finds.**
+
+Add:
+
+**📍 Kwashieman, Accra**
+**🚚 Nationwide Delivery**
+**💬 Order via WhatsApp**
+
+Keep it short.
+
+---
+
+# SOCIAL PROOF / SOCIAL SHOPPING
+
+Because this business already sells through social media, create a section that feels connected to its social presence.
+
+Headline:
+
+**Seen It on X? Shop It Here.**
+
+Copy:
+
+**We post new pieces and fresh finds on social. When something catches your eye, you can now shop it directly through the store.**
+
+Include the supplied X video as a visual reference where possible.
+
+Add:
+
+**Follow / See More on X**
+
+linking to the business's X profile if the profile URL is known.
+
+Do not invent the X username if it cannot be reliably determined.
+
+---
+
+# CATALOG IMAGE HANDLING
+
+If catalog/product images from the business's WhatsApp Shop or supplied media are available in the project, use those images instead of generic stock photography.
+
+Prioritize:
+
+1. Actual product/catalog images
+2. Images supplied by the user
+3. The supplied X media
+4. Carefully selected fashion placeholders only when actual images are unavailable
+
+Do NOT scrape random clothing images and present them as the business's actual stock.
+
+Create the product data structure so images can easily be replaced later.
+
+---
+
+# DESIGN DIRECTION
+
+Make the website feel like a modern fashion brand.
+
+Visual references:
+
+* Minimal fashion e-commerce
+* Editorial streetwear websites
+* Modern Shopify stores
+* Apple-level spacing and cleanliness
+* Strong typography
+* Large imagery
+* Subtle animations
+
+Avoid:
+
+* Generic Bootstrap appearance
+* Excessive gradients
+* Cheap-looking cards
+* Excessive rounded rectangles
+* Too much text
+* Cluttered navigation
+* Stock-photo-heavy layouts
+* Fake reviews
+* Fake customer counts
+* Fake discounts
+* Fake scarcity timers
+
+Use a refined neutral palette:
+
+* Off-white / cream background
+* Black / near-black typography
+* Muted gray
+* Very subtle accent color
+
+Typography should feel bold and fashionable.
+
+Use large headings and generous whitespace.
+
+---
+
+# RESPONSIVE DESIGN
+
+The site must be excellent on:
+
+* Mobile phones
+* Tablets
+* Desktop
+
+Mobile is especially important because the primary customer journey will likely be:
+
+**Social media → Website → Product → WhatsApp**
+
+On mobile:
+
+* Make product cards easy to browse
+* Use 2-column product grid where appropriate
+* Keep WhatsApp CTA highly visible
+* Add a sticky bottom mobile CTA:
+
+**💬 Order on WhatsApp**
+
+---
+
+# INTERACTIONS
+
+Add subtle premium interactions:
+
+* Smooth scrolling
+* Product image hover/zoom
+* Fade/slide reveal animations
+* Category filtering
+* Product quick-view modal
+* Sticky navigation
+* Smooth mobile menu
+* WhatsApp deep links
+* Image transitions
+* Horizontal product carousel where appropriate
+
+Animations should be fast and subtle.
+
+Do not over-animate the site.
+
+---
+
+# PRODUCT QUICK VIEW
+
+When a user clicks a product:
+
+Show:
+
+* Large image
+* Product name
+* Category
+* Price
+* Short description
+* Availability
+* WhatsApp order button
+
+Example CTA:
+
+**Check Availability on WhatsApp**
+
+The modal should make it extremely easy to move from browsing to messaging.
+
+---
+
+# FOOTER
+
+Create a clean footer containing:
+
+Business name
+
+**Good Fits. Better Finds.**
+
+Kwashieman, Accra
+
+Nationwide Delivery 🇬🇭
+
+WhatsApp:
++233 24 230 4326
++233 50 121 8442
+
+Links:
+
+Shop
+New Drops
+Delivery
+WhatsApp
+X
+
+Copyright.
+
+---
+
+# TECHNICAL REQUIREMENTS
+
+Use:
+
+**React + Vite**
+
+Use:
+
+**Tailwind CSS**
+
+Use JavaScript, not TypeScript.
+
+Frontend only.
+
+No backend.
+
+No database.
+
+No authentication.
+
+No payment gateway.
+
+No fake API calls.
+
+Keep product data in a clean local JavaScript data structure so it can easily be replaced later.
+
+Structure the project professionally.
+
+Use reusable components such as:
+
+* Navbar
+* Hero
+* CategoryFilter
+* ProductGrid
+* ProductCard
+* ProductModal
+* FeaturedProducts
+* NewDrops
+* HowItWorks
+* DeliverySection
+* SocialSection
+* WhatsAppCTA
+* Footer
+
+Optimize images and use responsive image sizing.
+
+Ensure all buttons and links actually work.
+
+---
+
+# MOST IMPORTANT UX PRINCIPLE
+
+The website is not trying to replace WhatsApp.
+
+It is a **visual storefront that makes WhatsApp ordering easier.**
+
+The ideal customer journey is:
+
+**See product → Like product → Check details → Tap WhatsApp → Confirm availability → Buy**
+
+Make that journey obvious throughout the entire website.
+
+---
+
+# FINAL QUALITY BAR
+
+Before finishing, review the entire page as if you are a senior product designer.
+
+The result should look like a **real fashion brand's online storefront**, not an AI-generated demo.
+
+Prioritize:
+
+**Beautiful product photography + strong copy + simple browsing + WhatsApp conversion.**
+
+Keep the copy short.
+
+Let the clothing and imagery do most of the selling.
