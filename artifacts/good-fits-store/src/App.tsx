@@ -1,19 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
+  ArrowLeft,
   ArrowRight,
   ArrowUpRight,
   Check,
   ChevronLeft,
   ChevronRight,
   ExternalLink,
+  Minus,
   MapPin,
   Menu,
   MessageCircle,
   MoveDownRight,
   PackageCheck,
+  Plus,
+  ShoppingBag,
+  Trash2,
   Truck,
   X,
 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 import { products, categories } from '@/data/products';
 
 type Product = {
@@ -25,6 +31,17 @@ type Product = {
   status: string;
   label: string;
   description: string;
+};
+
+type CartItem = Product & {
+  quantity: number;
+};
+
+type CheckoutValues = {
+  fullName: string;
+  phone: string;
+  deliveryArea: string;
+  notes: string;
 };
 
 const waNumbers = ['233242304326', '233501218442'];
@@ -40,6 +57,29 @@ function whatsappUrl(product?: Product, number = waNumbers[0]) {
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
 }
 
+function cartTotal(cart: CartItem[]) {
+  return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+}
+
+function checkoutWhatsappUrl(cart: CartItem[], details: CheckoutValues) {
+  const items = cart
+    .map((item) => `- ${item.name} x${item.quantity} — ${money(item.price * item.quantity)}`)
+    .join('\n');
+  const notes = details.notes.trim() ? `\nNotes: ${details.notes.trim()}` : '';
+  const message = [
+    "Hi, I'd like to place an order from thrift by Nessi.",
+    '',
+    items,
+    '',
+    `Subtotal: ${money(cartTotal(cart))}`,
+    `Name: ${details.fullName}`,
+    `Phone: ${details.phone}`,
+    `Delivery area: ${details.deliveryArea}${notes}`,
+    '',
+    'Please confirm availability and delivery details.',
+  ].join('\n');
+  return `https://wa.me/${waNumbers[0]}?text=${encodeURIComponent(message)}`;
+}
 function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -64,7 +104,17 @@ function Logo({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function Nav({ mobileOpen, setMobileOpen }: { mobileOpen: boolean; setMobileOpen: (value: boolean) => void }) {
+function Nav({
+  mobileOpen,
+  setMobileOpen,
+  cartCount,
+  onOpenCart,
+}: {
+  mobileOpen: boolean;
+  setMobileOpen: (value: boolean) => void;
+  cartCount: number;
+  onOpenCart: () => void;
+}) {
   const links = [
     ['Shop', 'shop'],
     ['New Drops', 'drops'],
@@ -89,6 +139,17 @@ function Nav({ mobileOpen, setMobileOpen }: { mobileOpen: boolean; setMobileOpen
           ))}
         </nav>
         <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onOpenCart}
+            className="relative flex h-10 items-center gap-2 border border-[hsl(var(--foreground)/.15)] px-3 font-mono-custom text-[10px] uppercase tracking-[.1em] transition-colors hover:bg-[hsl(var(--foreground))] hover:text-[hsl(var(--background))]"
+            aria-label={`Open shopping bag${cartCount ? ` with ${cartCount} items` : ''}`}
+            data-testid="button-open-cart"
+          >
+            <ShoppingBag size={15} />
+            <span className="hidden sm:inline">Bag</span>
+            <span className="min-w-4 text-center" data-testid="text-cart-count">{cartCount}</span>
+          </button>
           <a
             href={whatsappUrl()}
             target="_blank"
@@ -199,7 +260,15 @@ function Hero() {
   );
 }
 
-function ProductCard({ product, onView }: { product: Product; onView: (product: Product) => void }) {
+function ProductCard({
+  product,
+  onView,
+  onAdd,
+}: {
+  product: Product;
+  onView: (product: Product) => void;
+  onAdd: (product: Product) => void;
+}) {
   return (
     <article className="group" data-testid={`card-product-${product.id}`}>
       <div className="relative aspect-[4/5] overflow-hidden bg-[hsl(var(--muted))]">
@@ -221,20 +290,30 @@ function ProductCard({ product, onView }: { product: Product; onView: (product: 
         </div>
         <p className="font-mono-custom text-xs font-medium" data-testid={`text-price-${product.id}`}>{money(product.price)}</p>
       </div>
-      <a
-        href={whatsappUrl(product)}
-        target="_blank"
-        rel="noreferrer"
-        className="flex items-center justify-between py-3 font-mono-custom text-[9px] uppercase tracking-[.1em] text-[hsl(var(--accent))] transition-colors hover:text-[hsl(var(--foreground))]"
-        data-testid={`link-order-${product.id}`}
-      >
-        Order on WhatsApp <MessageCircle size={14} />
-      </a>
+      <div className="grid grid-cols-2 gap-2 py-3">
+        <button
+          type="button"
+          onClick={() => onAdd(product)}
+          className="flex items-center justify-between border border-[hsl(var(--foreground)/.18)] px-2 py-3 font-mono-custom text-[8px] uppercase tracking-[.08em] transition-colors hover:border-[hsl(var(--foreground))] hover:bg-[hsl(var(--foreground))] hover:text-[hsl(var(--background))] sm:px-3 sm:text-[9px]"
+          data-testid={`button-add-${product.id}`}
+        >
+          Add to bag <Plus size={13} />
+        </button>
+        <a
+          href={whatsappUrl(product)}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center justify-between border border-[hsl(var(--accent))] px-2 py-3 font-mono-custom text-[8px] uppercase tracking-[.08em] text-[hsl(var(--accent))] transition-colors hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--background))] sm:px-3 sm:text-[9px]"
+          data-testid={`link-order-${product.id}`}
+        >
+          WhatsApp <MessageCircle size={13} />
+        </a>
+      </div>
     </article>
   );
 }
 
-function Shop({ onView }: { onView: (product: Product) => void }) {
+function Shop({ onView, onAdd }: { onView: (product: Product) => void; onAdd: (product: Product) => void }) {
   const [filter, setFilter] = useState('All');
   const filtered = useMemo(() => filter === 'All' ? products : filter === 'New Drops' ? products.filter((p) => p.label === 'NEW' || p.label === 'JUST IN') : products.filter((p) => p.category === filter), [filter]);
   return (
@@ -260,7 +339,7 @@ function Shop({ onView }: { onView: (product: Product) => void }) {
         </div>
       </div>
       <div className="mt-14 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-y-14">
-        {filtered.map((product) => <ProductCard key={product.id} product={product} onView={onView} />)}
+        {filtered.map((product) => <ProductCard key={product.id} product={product} onView={onView} onAdd={onAdd} />)}
       </div>
       {filtered.length === 0 && <div className="border border-dashed border-[hsl(var(--foreground)/.2)] py-20 text-center font-mono-custom text-xs uppercase tracking-[.1em] text-[hsl(var(--muted-foreground))]">New pieces are being added soon.</div>}
     </section>
@@ -300,7 +379,7 @@ function Featured() {
   );
 }
 
-function Drops({ onView }: { onView: (product: Product) => void }) {
+function Drops({ onView, onAdd }: { onView: (product: Product) => void; onAdd: (product: Product) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const move = (direction: number) => ref.current?.scrollBy({ left: direction * 320, behavior: 'smooth' });
   return (
@@ -320,7 +399,7 @@ function Drops({ onView }: { onView: (product: Product) => void }) {
         <div ref={ref} className="hide-scrollbar mt-12 flex snap-x gap-4 overflow-x-auto pb-2">
           {products.map((product) => (
             <div key={product.id} className="min-w-[72vw] snap-start sm:min-w-[300px] lg:min-w-[340px]">
-              <ProductCard product={product} onView={onView} />
+              <ProductCard product={product} onView={onView} onAdd={onAdd} />
             </div>
           ))}
         </div>
@@ -402,7 +481,174 @@ function Footer() {
   );
 }
 
-function ProductModal({ product, onClose }: { product: Product | null; onClose: () => void }) {
+function CartDrawer({
+  cart,
+  onClose,
+  onUpdateQuantity,
+  onRemove,
+  onCheckout,
+}: {
+  cart: CartItem[];
+  onClose: () => void;
+  onUpdateQuantity: (id: string, change: number) => void;
+  onRemove: (id: string) => void;
+  onCheckout: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 bg-[hsl(var(--primary)/.72)]" role="dialog" aria-modal="true" aria-label="Shopping bag" data-testid="cart-drawer">
+      <button type="button" onClick={onClose} className="absolute inset-0 cursor-default" aria-label="Close shopping bag" data-testid="button-cart-overlay" />
+      <aside className="absolute right-0 top-0 flex h-full w-full max-w-[480px] flex-col bg-[hsl(var(--background))] shadow-2xl">
+        <div className="flex items-center justify-between border-b border-[hsl(var(--foreground)/.15)] px-5 py-5 sm:px-8">
+          <div>
+            <p className="font-mono-custom text-[9px] uppercase tracking-[.14em] text-[hsl(var(--accent))]">Your selection</p>
+            <h2 className="mt-2 font-display text-3xl font-semibold tracking-[-.06em]">Shopping bag <span className="text-[hsl(var(--muted-foreground))]">({cart.reduce((sum, item) => sum + item.quantity, 0)})</span></h2>
+          </div>
+          <button type="button" onClick={onClose} className="flex h-10 w-10 items-center justify-center border border-[hsl(var(--foreground)/.18)] transition-colors hover:bg-[hsl(var(--foreground))] hover:text-[hsl(var(--background))]" aria-label="Close shopping bag" data-testid="button-close-cart"><X size={17} /></button>
+        </div>
+        {cart.length ? (
+          <>
+            <div className="hide-scrollbar flex-1 overflow-y-auto px-5 py-5 sm:px-8">
+              <div className="grid gap-5">
+                {cart.map((item) => (
+                  <div key={item.id} className="grid grid-cols-[76px_1fr] gap-4 border-b border-[hsl(var(--foreground)/.12)] pb-5" data-testid={`cart-item-${item.id}`}>
+                    <img src={item.image} alt={item.name} className="h-24 w-[76px] object-cover" />
+                    <div className="min-w-0">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="font-display text-base font-semibold leading-tight">{item.name}</p>
+                          <p className="mt-1 font-mono-custom text-[9px] uppercase tracking-[.1em] text-[hsl(var(--muted-foreground))]">{money(item.price)} each</p>
+                        </div>
+                        <button type="button" onClick={() => onRemove(item.id)} className="text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--accent))]" aria-label={`Remove ${item.name}`} data-testid={`button-remove-${item.id}`}><Trash2 size={15} /></button>
+                      </div>
+                      <div className="mt-5 flex items-center justify-between">
+                        <div className="flex items-center border border-[hsl(var(--foreground)/.18)]">
+                          <button type="button" onClick={() => onUpdateQuantity(item.id, -1)} className="flex h-8 w-8 items-center justify-center transition-colors hover:bg-[hsl(var(--foreground))] hover:text-[hsl(var(--background))]" aria-label={`Decrease ${item.name} quantity`} data-testid={`button-decrease-${item.id}`}><Minus size={13} /></button>
+                          <span className="w-8 text-center font-mono-custom text-[10px]" data-testid={`text-quantity-${item.id}`}>{item.quantity}</span>
+                          <button type="button" onClick={() => onUpdateQuantity(item.id, 1)} className="flex h-8 w-8 items-center justify-center transition-colors hover:bg-[hsl(var(--foreground))] hover:text-[hsl(var(--background))]" aria-label={`Increase ${item.name} quantity`} data-testid={`button-increase-${item.id}`}><Plus size={13} /></button>
+                        </div>
+                        <span className="font-mono-custom text-xs">{money(item.price * item.quantity)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="border-t border-[hsl(var(--foreground)/.15)] px-5 pb-6 pt-5 sm:px-8">
+              <div className="flex items-center justify-between font-mono-custom text-xs uppercase tracking-[.1em]">
+                <span>Subtotal</span>
+                <span data-testid="text-cart-total">{money(cartTotal(cart))}</span>
+              </div>
+              <p className="mt-3 text-xs leading-5 text-[hsl(var(--muted-foreground))]">Delivery details and any delivery charges will be confirmed before fulfillment.</p>
+              <button type="button" onClick={onCheckout} className="mt-5 flex w-full items-center justify-between bg-[hsl(var(--foreground))] px-5 py-4 font-mono-custom text-[10px] uppercase tracking-[.11em] text-[hsl(var(--background))] transition-transform hover:-translate-y-0.5" data-testid="button-checkout">Continue to checkout <ArrowRight size={16} /></button>
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
+            <ShoppingBag size={30} strokeWidth={1.2} className="text-[hsl(var(--accent))]" />
+            <h3 className="mt-5 font-display text-2xl font-semibold">Your bag is empty.</h3>
+            <p className="mt-3 max-w-[260px] text-sm leading-6 text-[hsl(var(--muted-foreground))]">Add a piece you like and your total will be ready at checkout.</p>
+            <button type="button" onClick={onClose} className="mt-7 border-b border-[hsl(var(--foreground))] pb-2 font-mono-custom text-[10px] uppercase tracking-[.11em]" data-testid="button-continue-shopping">Continue shopping</button>
+          </div>
+        )}
+      </aside>
+    </div>
+  );
+}
+
+function CheckoutPanel({
+  cart,
+  onClose,
+  onBack,
+  onOrderSent,
+}: {
+  cart: CartItem[];
+  onClose: () => void;
+  onBack: () => void;
+  onOrderSent: () => void;
+}) {
+  const [submitted, setSubmitted] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<CheckoutValues>({
+    defaultValues: { fullName: '', phone: '', deliveryArea: '', notes: '' },
+  });
+
+  const submitOrder = (values: CheckoutValues) => {
+    window.open(checkoutWhatsappUrl(cart, values), '_blank', 'noopener,noreferrer');
+    onOrderSent();
+    setSubmitted(true);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[60] bg-[hsl(var(--primary)/.72)]" role="dialog" aria-modal="true" aria-label="Checkout" data-testid="checkout-panel">
+      <button type="button" onClick={onClose} className="absolute inset-0 cursor-default" aria-label="Close checkout" data-testid="button-checkout-overlay" />
+      <aside className="absolute right-0 top-0 flex h-full w-full max-w-[540px] flex-col bg-[hsl(var(--background))] shadow-2xl">
+        {submitted ? (
+          <div className="flex flex-1 flex-col justify-center px-7 py-10 sm:px-12">
+            <div className="flex h-14 w-14 items-center justify-center bg-[hsl(var(--secondary))]"><Check size={25} /></div>
+            <p className="mt-8 font-mono-custom text-[9px] uppercase tracking-[.14em] text-[hsl(var(--accent))]">Checkout sent</p>
+            <h2 className="mt-3 max-w-[380px] font-display text-5xl font-semibold leading-[.88] tracking-[-.07em]">Your order is ready.</h2>
+            <p className="mt-6 max-w-[380px] text-sm leading-6 text-[hsl(var(--muted-foreground))]">Your order summary is open in WhatsApp. We’ll confirm availability, size and delivery details there.</p>
+            <button type="button" onClick={onClose} className="mt-9 flex w-full items-center justify-between bg-[hsl(var(--foreground))] px-5 py-4 font-mono-custom text-[10px] uppercase tracking-[.11em] text-[hsl(var(--background))]" data-testid="button-finish-checkout">Back to the store <ArrowRight size={16} /></button>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-between border-b border-[hsl(var(--foreground)/.15)] px-5 py-5 sm:px-8">
+              <div>
+                <p className="font-mono-custom text-[9px] uppercase tracking-[.14em] text-[hsl(var(--accent))]">02 / Your details</p>
+                <h2 className="mt-2 font-display text-3xl font-semibold tracking-[-.06em]">Checkout</h2>
+              </div>
+              <button type="button" onClick={onClose} className="flex h-10 w-10 items-center justify-center border border-[hsl(var(--foreground)/.18)] transition-colors hover:bg-[hsl(var(--foreground))] hover:text-[hsl(var(--background))]" aria-label="Close checkout" data-testid="button-close-checkout"><X size={17} /></button>
+            </div>
+            <form onSubmit={handleSubmit(submitOrder)} className="hide-scrollbar flex-1 overflow-y-auto px-5 py-6 sm:px-8">
+              <div className="border-b border-[hsl(var(--foreground)/.12)] pb-6">
+                <p className="font-mono-custom text-[9px] uppercase tracking-[.11em] text-[hsl(var(--muted-foreground))]">Order summary</p>
+                <div className="mt-4 grid gap-3">
+                  {cart.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between gap-4 text-sm" data-testid={`checkout-item-${item.id}`}>
+                      <span>{item.name} <span className="text-[hsl(var(--muted-foreground))]">× {item.quantity}</span></span>
+                      <span className="font-mono-custom text-xs">{money(item.price * item.quantity)}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-5 flex items-center justify-between border-t border-[hsl(var(--foreground)/.12)] pt-4 font-mono-custom text-xs uppercase tracking-[.1em]">
+                  <span>Subtotal</span>
+                  <span data-testid="text-checkout-total">{money(cartTotal(cart))}</span>
+                </div>
+              </div>
+              <div className="grid gap-5 pt-6">
+                <div>
+                  <label htmlFor="checkout-full-name" className="font-mono-custom text-[9px] uppercase tracking-[.11em]">Full name</label>
+                  <input id="checkout-full-name" {...register('fullName', { required: 'Please add your name.' })} className="mt-2 w-full border-b border-[hsl(var(--foreground)/.22)] bg-transparent py-3 text-sm outline-none transition-colors focus:border-[hsl(var(--accent))]" placeholder="Your name" data-testid="input-checkout-name" />
+                  {errors.fullName && <p className="mt-2 text-xs text-[hsl(var(--accent))]" data-testid="error-checkout-name">{errors.fullName.message}</p>}
+                </div>
+                <div>
+                  <label htmlFor="checkout-phone" className="font-mono-custom text-[9px] uppercase tracking-[.11em]">Phone number</label>
+                  <input id="checkout-phone" type="tel" {...register('phone', { required: 'Please add a phone number.' })} className="mt-2 w-full border-b border-[hsl(var(--foreground)/.22)] bg-transparent py-3 text-sm outline-none transition-colors focus:border-[hsl(var(--accent))]" placeholder="+233 ..." data-testid="input-checkout-phone" />
+                  {errors.phone && <p className="mt-2 text-xs text-[hsl(var(--accent))]" data-testid="error-checkout-phone">{errors.phone.message}</p>}
+                </div>
+                <div>
+                  <label htmlFor="checkout-area" className="font-mono-custom text-[9px] uppercase tracking-[.11em]">Delivery area</label>
+                  <input id="checkout-area" {...register('deliveryArea', { required: 'Please add your delivery area.' })} className="mt-2 w-full border-b border-[hsl(var(--foreground)/.22)] bg-transparent py-3 text-sm outline-none transition-colors focus:border-[hsl(var(--accent))]" placeholder="City, neighbourhood or landmark" data-testid="input-checkout-area" />
+                  {errors.deliveryArea && <p className="mt-2 text-xs text-[hsl(var(--accent))]" data-testid="error-checkout-area">{errors.deliveryArea.message}</p>}
+                </div>
+                <div>
+                  <label htmlFor="checkout-notes" className="font-mono-custom text-[9px] uppercase tracking-[.11em]">Notes <span className="text-[hsl(var(--muted-foreground))]">(optional)</span></label>
+                  <textarea id="checkout-notes" {...register('notes')} rows={3} className="mt-2 w-full resize-none border-b border-[hsl(var(--foreground)/.22)] bg-transparent py-3 text-sm outline-none transition-colors focus:border-[hsl(var(--accent))]" placeholder="Size request or anything else we should know" data-testid="input-checkout-notes" />
+                </div>
+              </div>
+              <div className="mt-8 border-t border-[hsl(var(--foreground)/.12)] pt-5">
+                <p className="text-xs leading-5 text-[hsl(var(--muted-foreground))]">No payment is taken here. We’ll use WhatsApp to confirm stock, size and delivery before you pay.</p>
+                <button type="submit" className="mt-5 flex w-full items-center justify-between bg-[hsl(var(--foreground))] px-5 py-4 font-mono-custom text-[10px] uppercase tracking-[.11em] text-[hsl(var(--background))] transition-transform hover:-translate-y-0.5" data-testid="button-place-order">Place order & open WhatsApp <MessageCircle size={16} /></button>
+              </div>
+            </form>
+            <button type="button" onClick={onBack} className="mx-5 mb-5 flex items-center gap-2 font-mono-custom text-[9px] uppercase tracking-[.11em] text-[hsl(var(--muted-foreground))] sm:mx-8" data-testid="button-back-to-cart"><ArrowLeft size={13} /> Back to bag</button>
+          </>
+        )}
+      </aside>
+    </div>
+  );
+}
+
+function ProductModal({ product, onClose, onAdd }: { product: Product | null; onClose: () => void; onAdd: (product: Product) => void }) {
   useEffect(() => {
     if (!product) return;
     const onKey = (event: KeyboardEvent) => event.key === 'Escape' && onClose();
@@ -419,7 +665,7 @@ function ProductModal({ product, onClose }: { product: Product | null; onClose: 
       <button type="button" onClick={onClose} className="absolute inset-0 cursor-default" aria-label="Close product details" data-testid="button-modal-overlay" />
       <div className="relative z-10 grid max-h-[92dvh] w-full max-w-[900px] overflow-auto bg-[hsl(var(--background))] sm:grid-cols-2">
         <div className="relative aspect-square bg-[hsl(var(--muted))] sm:aspect-auto"><img src={product.image} alt={product.name} className="h-full w-full object-cover" /><span className="absolute left-4 top-4 bg-[hsl(var(--background)/.92)] px-2 py-1 font-mono-custom text-[9px] uppercase tracking-[.1em]">{product.label}</span></div>
-        <div className="relative flex flex-col p-6 sm:p-10"><button type="button" onClick={onClose} className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center border border-[hsl(var(--foreground)/.18)] transition-colors hover:bg-[hsl(var(--foreground))] hover:text-[hsl(var(--background))]" aria-label="Close product details" data-testid="button-close-modal"><X size={16} /></button><p className="mt-9 font-mono-custom text-[10px] uppercase tracking-[.14em] text-[hsl(var(--accent))]">{product.category}</p><h2 className="mt-4 max-w-[330px] font-display text-4xl font-semibold leading-[.9] tracking-[-.06em]" data-testid="modal-product-name">{product.name}</h2><p className="mt-5 font-mono-custom text-lg" data-testid="modal-product-price">{money(product.price)}</p><p className="mt-8 text-sm leading-7 text-[hsl(var(--muted-foreground))]" data-testid="modal-product-description">{product.description}</p><div className="mt-8 flex items-center gap-2 border-y border-[hsl(var(--foreground)/.15)] py-4 font-mono-custom text-[10px] uppercase tracking-[.1em]"><Check size={15} className="text-[hsl(var(--accent))]" /> {product.status}</div><a href={whatsappUrl(product)} target="_blank" rel="noreferrer" className="mt-auto flex items-center justify-between bg-[hsl(var(--foreground))] px-5 py-4 font-mono-custom text-[10px] uppercase tracking-[.1em] text-[hsl(var(--background))] transition-transform hover:-translate-y-1" data-testid="modal-order-whatsapp">Check availability on WhatsApp <MessageCircle size={16} /></a></div>
+        <div className="relative flex flex-col p-6 sm:p-10"><button type="button" onClick={onClose} className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center border border-[hsl(var(--foreground)/.18)] transition-colors hover:bg-[hsl(var(--foreground))] hover:text-[hsl(var(--background))]" aria-label="Close product details" data-testid="button-close-modal"><X size={16} /></button><p className="mt-9 font-mono-custom text-[10px] uppercase tracking-[.14em] text-[hsl(var(--accent))]">{product.category}</p><h2 className="mt-4 max-w-[330px] font-display text-4xl font-semibold leading-[.9] tracking-[-.06em]" data-testid="modal-product-name">{product.name}</h2><p className="mt-5 font-mono-custom text-lg" data-testid="modal-product-price">{money(product.price)}</p><p className="mt-8 text-sm leading-7 text-[hsl(var(--muted-foreground))]" data-testid="modal-product-description">{product.description}</p><div className="mt-8 flex items-center gap-2 border-y border-[hsl(var(--foreground)/.15)] py-4 font-mono-custom text-[10px] uppercase tracking-[.1em]"><Check size={15} className="text-[hsl(var(--accent))]" /> {product.status}</div><div className="mt-auto grid gap-2 pt-8 sm:grid-cols-2"><button type="button" onClick={() => onAdd(product)} className="flex items-center justify-between border border-[hsl(var(--foreground)/.2)] px-5 py-4 font-mono-custom text-[10px] uppercase tracking-[.1em] transition-colors hover:bg-[hsl(var(--foreground))] hover:text-[hsl(var(--background))]" data-testid="modal-add-to-bag">Add to bag <Plus size={16} /></button><a href={whatsappUrl(product)} target="_blank" rel="noreferrer" className="flex items-center justify-between bg-[hsl(var(--foreground))] px-5 py-4 font-mono-custom text-[10px] uppercase tracking-[.1em] text-[hsl(var(--background))] transition-transform hover:-translate-y-1" data-testid="modal-order-whatsapp">Check availability on WhatsApp <MessageCircle size={16} /></a></div></div>
       </div>
     </div>
   );
@@ -428,21 +674,70 @@ function ProductModal({ product, onClose }: { product: Product | null; onClose: 
 function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<Product | null>(null);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+
+  const addToCart = (product: Product) => {
+    setCart((current) => {
+      const existing = current.find((item) => item.id === product.id);
+      if (existing) {
+        return current.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+      }
+      return [...current, { ...product, quantity: 1 }];
+    });
+  };
+
+  const updateQuantity = (id: string, change: number) => {
+    setCart((current) => current
+      .map((item) => item.id === id ? { ...item, quantity: item.quantity + change } : item)
+      .filter((item) => item.quantity > 0));
+  };
+
+  const removeFromCart = (id: string) => {
+    setCart((current) => current.filter((item) => item.id !== id));
+  };
+
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
     <div className="grain min-h-[100dvh] bg-[hsl(var(--background))]">
-      <Nav mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
+      <Nav mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} cartCount={cartCount} onOpenCart={() => setCartOpen(true)} />
       <main>
         <Hero />
-        <Shop onView={setSelected} />
+        <Shop onView={setSelected} onAdd={addToCart} />
         <Featured />
-        <Drops onView={setSelected} />
+        <Drops onView={setSelected} onAdd={addToCart} />
         <HowItWorks />
         <DeliveryAndAbout />
         <SocialAndCta />
       </main>
       <Footer />
       <a href={whatsappUrl()} target="_blank" rel="noreferrer" className="fixed bottom-4 left-4 right-4 z-30 flex items-center justify-center gap-3 bg-[hsl(var(--secondary))] px-5 py-4 font-mono-custom text-[10px] uppercase tracking-[.12em] text-[hsl(var(--foreground))] shadow-lg sm:hidden" data-testid="mobile-whatsapp-cta"><MessageCircle size={17} /> Order on WhatsApp</a>
-      <ProductModal product={selected} onClose={() => setSelected(null)} />
+      <ProductModal product={selected} onClose={() => setSelected(null)} onAdd={addToCart} />
+      {cartOpen && (
+        <CartDrawer
+          cart={cart}
+          onClose={() => setCartOpen(false)}
+          onUpdateQuantity={updateQuantity}
+          onRemove={removeFromCart}
+          onCheckout={() => {
+            setCartOpen(false);
+            setCheckoutOpen(true);
+          }}
+        />
+      )}
+      {checkoutOpen && (
+        <CheckoutPanel
+          cart={cart}
+          onClose={() => setCheckoutOpen(false)}
+          onBack={() => {
+            setCheckoutOpen(false);
+            setCartOpen(true);
+          }}
+          onOrderSent={() => setCart([])}
+        />
+      )}
     </div>
   );
 }
